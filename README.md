@@ -3,7 +3,7 @@
 
 https://jvnt.vercel.app/
 
-My own corner of the internet. For anything and everything. But mainly to learn.
+My own corner of the internet. For anything and everythin, but mainly to learn.
 
 Stack:
 - Framework: next.js
@@ -58,13 +58,17 @@ npx shadcn@latest add button label input sonner  # install shadcn components
 npm i better-auth
 npm i prisma --save-dev
 npm i @prisma/adapter-pg
+npm i @prisma/client
 npm i --save-dev @types/pg
 
 # db operations
 npx prisma init
-npx prisma db push  # after adding a table/model
-npx prisma generate
+npx prisma db push  # AFTER adding a table/model
+npx prisma generate  # but also this goes into scripts in package.json so it gets run whenever you `npm run dev`
 prisma migrate dev?
+
+# better auth
+npx @better-auth/cli generate --output=auth.schema.prisma  # AFTER setting up db  # the output flag is to prevent our schema being overwritten; we do this instead, copy over what we need from auth.schema.prisma to schema.prisma, then delete auth.schema.prisma
 
 # run dev server
 npm run dev
