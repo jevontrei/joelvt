@@ -1,5 +1,4 @@
 import { RegisterForm } from "@/components/register-form";
-import React from "react";
 
 // default export -- can import with any name
 export default function Page() {
