@@ -54,7 +54,7 @@ export default function SearchMoviesForm() {
 
       <form onSubmit={handleSubmit} className="max-w-sm w-full space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Movie title search</Label>
+          <Label htmlFor="title">Search movie titles (with the TMDb API)</Label>
           <Input id="title" name="title" />
         </div>
 

@@ -13,9 +13,10 @@ Stack:
 - Auth: better auth
 - Deployment: Vercel (then switch to AWS later?)
 - APIs:
-  - TMBD (movies)
+  - TMDb (movies)
   - Up (banking)
   - Music?
+  - Nominatim (geo)
 
 TODO:
 
