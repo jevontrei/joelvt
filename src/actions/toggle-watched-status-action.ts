@@ -1,0 +1,48 @@
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { Movie } from "@/generated/prisma/client";
+
+type ToggleStatusSuccessType = {
+  error: null;
+  // what should this be?
+  data: Movie;
+};
+
+type ToggleStatusErrorType = {
+  error: string;
+  data: null;
+};
+
+type ToggleStatusType = ToggleStatusSuccessType | ToggleStatusErrorType;
+
+export async function ToggleWatchedStatusAction(
+  movieId: string,
+): Promise<ToggleStatusType> {
+  try {
+    // first, get movie from db (we need access to the watched status)
+    const movie = await prisma.movie.findUnique({ where: { id: movieId } });
+
+    // need this for race conditions etc
+    if (!movie) {
+      return { error: `Movie with id ${movieId} not found`, data: null };
+    }
+
+    // then update movie in db
+    // in case you're wondering, yes this returns the whole movie object
+    const dbResponse = await prisma.movie.update({
+      where: { id: movieId },
+      data: { watched: !movie.watched },
+    });
+    console.log("dbResponse:", dbResponse);
+
+    // return data to browser
+    return {
+      error: null,
+      data: dbResponse,
+    };
+  } catch (err) {
+    console.log("Error in database fetching:", err);
+    return { error: String(err), data: null };
+  }
+}

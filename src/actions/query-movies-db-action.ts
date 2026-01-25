@@ -18,7 +18,6 @@ type DbQueryType = DbQuerySuccessType | DbQueryErrorType;
 export async function QueryMoviesDbAction(): Promise<DbQueryType> {
   try {
     const dbResponse = await prisma.movie.findMany();
-    console.log("dbResponse:", dbResponse);
 
     // return data to browser
     return {
