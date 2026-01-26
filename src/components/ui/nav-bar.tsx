@@ -33,6 +33,10 @@ export default function NavBar() {
       link: "/music",
     },
     {
+      name: "Blog",
+      link: "/blog",
+    },
+    {
       name: "Up",
       link: "/up",
     },
@@ -43,7 +47,7 @@ export default function NavBar() {
       {navItems.map((navItem, i) => {
         return (
           // TODO: fix this tw
-          <Button key={i} className="gap-4">
+          <Button key={i} className="gap-4 ml-1.5">
             <Link href={navItem.link}>{navItem.name}</Link>
           </Button>
         );

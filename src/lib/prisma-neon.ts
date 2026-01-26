@@ -7,7 +7,7 @@ const globalForPrisma = global as unknown as {
 };
 
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.NEON_DATABASE_URL,
 });
 
 // DAYUM! i was initially following this: https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help

@@ -1,7 +1,8 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-neon";
 import { Movie } from "@/generated/prisma/client";
+import { notifyDiscord } from "./notify-discord-action";
 
 type ToggleStatusSuccessType = {
   error: null;
@@ -34,7 +35,11 @@ export async function ToggleWatchedStatusAction(
       where: { id: movieId },
       data: { watched: !movie.watched },
     });
-    console.log("dbResponse:", dbResponse);
+
+    await notifyDiscord(
+      // this logic looks backwards but it's because we're flipping the EXISTING status
+      `Movie watch status updated: ${movie.title} is ${!movie.watched ? "watched" : "unwatched"}`,
+    );
 
     // return data to browser
     return {

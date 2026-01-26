@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Movie } from "@/generated/prisma/client";
 import { QueryMoviesDbAction } from "@/actions/query-movies-db-action";
 import { ToggleWatchedStatusAction } from "@/actions/toggle-watched-status-action";
+import { DeleteMovieAction } from "@/actions/delete-movie-action";
 
 export default function MyMovies() {
   const [myMovies, setMyMovies] = useState<Movie[] | null>(null);
@@ -62,6 +63,46 @@ export default function MyMovies() {
         toast.error(error);
         return;
       }
+
+      // i don't think this would happen, except maybe in a crazy unlucky scenario (?)
+      if (!data) {
+        setDbIsEmpty(true);
+        toast.info("Database is empty!");
+        return;
+      }
+
+      // only runs if no error
+      toast.success("Hell yeah!");
+
+      //  update myMovies with data
+      if (!myMovies) return; // early return just to satisfy ts (myMovies won't be null here because of {myMovies && ...} below)
+      const updatedMyMovies = myMovies.map((movie) =>
+        movie.id === data.id ? data : movie,
+      );
+      setMyMovies(updatedMyMovies);
+    } catch (err) {
+      console.log("Error from my-movies.tsx:", err);
+      toast.error(`Network error: ${err}`);
+    } finally {
+      // always re-enable button
+      setIsPending(false);
+    }
+  }
+
+  async function handleDeleteClick(movieId: string) {
+    setIsPending(true);
+
+    try {
+      toast.info("Thinking...");
+
+      const { error, data } = await DeleteMovieAction(movieId);
+
+      if (error) {
+        console.log("[delete-movie-action] Failed to delete movie:", error);
+        toast.error(error);
+        return;
+      }
+
       // i don't think this would happen, except maybe in a crazy unlucky scenario (?)
       if (!data) {
         setDbIsEmpty(true);
@@ -106,8 +147,9 @@ export default function MyMovies() {
               <tr>
                 <th className="p-2 text-left">Title</th>
                 <th className="p-2 text-left">Status</th>
-                <th className="p-2 text-left">Action</th>
-                <th className="p-2 text-left">Action</th>
+                <th className="p-2 text-left">Toggle</th>
+                <th className="p-2 text-left">Liked?</th>
+                <th className="p-2 text-left">Delete?</th>
               </tr>
             </thead>
             <tbody>
@@ -129,11 +171,12 @@ export default function MyMovies() {
                       )}
                     </Button>
                   </td>
+                  <td>{movie.liked ? <span>Liked</span> : null}</td>
                   <td>
                     <Button
                       className="w-sm"
                       disabled={isPending}
-                      onClick={() => handleClick(movie.id)}
+                      onClick={() => handleDeleteClick(movie.id)}
                     >
                       Delete
                     </Button>

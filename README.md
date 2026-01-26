@@ -20,6 +20,7 @@ Stack:
   - Banking: Up
   - Music: Spotify Web API or iTunes Search API
   - Geocoding: Nominatim
+  - Discord
 
 TODO:
 
@@ -50,6 +51,7 @@ TODO:
     - BMX
     - Bus driving
     - QUT / research
+    - obsidian
   - photos
   - music
   - 

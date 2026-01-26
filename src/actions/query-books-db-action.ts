@@ -1,7 +1,8 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-nas";
 import { Book } from "@/generated/prisma/client";
+import { notifyDiscord } from "./notify-discord-action";
 
 type DbQuerySuccessType = {
   error: null;
@@ -22,6 +23,8 @@ type DbQueryType = DbQuerySuccessType | DbQueryErrorType;
 export async function QueryBooksDbAction(): Promise<DbQueryType> {
   try {
     const dbResponse = await prisma.book.findMany();
+
+    await notifyDiscord(`Books db queried: ${dbResponse.length} books found`);
 
     // return data to browser
     return {

@@ -2,7 +2,8 @@
 
 // do i even need to write "use server"?
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-neon";
+import { notifyDiscord } from "./notify-discord-action";
 
 // define types for the return value of this action; to prevent annoying typescript complaints in search-forecast-form.tsx
 // type export -- must import with exact name
@@ -40,7 +41,7 @@ export async function SearchMoviesAction(
 
     // validate
     if (!title) {
-      console.log("title error...");
+      console.log(">> Title error...");
       return {
         error: "Please enter your title",
         data: null,
@@ -75,7 +76,9 @@ export async function SearchMoviesAction(
     // add movie to db
     await prisma.movie.create({ data: movie });
 
-    // // return data to browser
+    await notifyDiscord(`Movies API called and db updated: ${movie.title}`);
+
+    // return data to browser
     return { error: null, data: movie };
   } catch (err) {
     console.log(err);
