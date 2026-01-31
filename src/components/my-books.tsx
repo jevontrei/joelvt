@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { Book } from "@/generated/prisma/client";
 import { QueryBooksDbAction } from "@/actions/query-books-db-action";
-import { ToggleWatchedStatusAction } from "@/actions/toggle-watched-status-action";
+import { ToggleReadStatusAction } from "@/actions/toggle-read-status-action";
 
 export default function MyBooks() {
   const [myBooks, setMyBooks] = useState<Book[] | null>(null);
@@ -52,11 +52,11 @@ export default function MyBooks() {
     try {
       toast.info("Thinking...");
 
-      const { error, data } = await ToggleWatchedStatusAction(bookId);
+      const { error, data } = await ToggleReadStatusAction(bookId);
 
       if (error) {
         console.log(
-          "[toggle-watched-status-action] Failed to fetch books or toggle status:",
+          "[toggle-read-status-action] Failed to fetch books or toggle status:",
           error,
         );
         toast.error(error);
@@ -94,7 +94,7 @@ export default function MyBooks() {
       </form>
 
       {dbIsEmpty && (
-        <div>
+        <div className="my-8">
           Looks like the db is empty! Better go fetch some bloody books!
         </div>
       )}
@@ -114,18 +114,18 @@ export default function MyBooks() {
               {myBooks.map((book) => (
                 <tr key={book.id}>
                   <td>{book.title}</td>
-                  <td>{book.watched ? <span>Watched</span> : null}</td>
+                  <td>{book.read ? <span>Read</span> : null}</td>
                   <td>
                     <Button
-                      // don't need type="submit" here, that's only for forms
+                      // don't need type="submit" her;, that's only for forms
                       className="w-sm"
                       disabled={isPending}
                       onClick={() => handleClick(book.id)}
                     >
-                      {book.watched ? (
-                        <span>Mark as unwatched</span>
+                      {book.read ? (
+                        <span>Mark as unread</span>
                       ) : (
-                        <span>Mark as watched</span>
+                        <span>Mark as read</span>
                       )}
                     </Button>
                   </td>

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma-neon";
-import { Movie } from "@/generated/prisma/client";
+import { Movie } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
 import { notifyDiscord } from "./notify-discord-action";
 
 type DbQuerySuccessType = {

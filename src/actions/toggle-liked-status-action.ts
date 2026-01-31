@@ -17,11 +17,11 @@ type ToggleStatusErrorType = {
 
 type ToggleStatusType = ToggleStatusSuccessType | ToggleStatusErrorType;
 
-export async function ToggleWatchedStatusAction(
+export async function ToggleLikedStatusAction(
   movieId: string,
 ): Promise<ToggleStatusType> {
   try {
-    // first, get movie from db (we need access to its watched status)
+    // first, get movie from db (we need access to its liked status)
     const movie = await prisma.movie.findUnique({ where: { id: movieId } });
 
     // need this for race conditions etc
@@ -33,12 +33,12 @@ export async function ToggleWatchedStatusAction(
     // in case you're wondering, yes this returns the whole movie object
     const dbResponse = await prisma.movie.update({
       where: { id: movieId },
-      data: { watched: !movie.watched },
+      data: { liked: !movie.liked },
     });
 
     await notifyDiscord(
       // this logic looks backwards but it's because we're flipping the EXISTING status
-      `Movie watch status updated: ${movie.title} is ${!movie.watched ? "watched" : "unwatched"}`,
+      `Movie liked status updated: ${movie.title} is ${!movie.liked ? "liked" : "not liked"}`,
     );
 
     // return data to browser

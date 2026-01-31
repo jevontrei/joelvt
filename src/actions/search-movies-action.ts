@@ -4,6 +4,7 @@
 
 import { prisma } from "@/lib/prisma-neon";
 import { notifyDiscord } from "./notify-discord-action";
+import { Prisma } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
 
 // define types for the return value of this action; to prevent annoying typescript complaints in search-forecast-form.tsx
 // type export -- must import with exact name
@@ -11,7 +12,9 @@ import { notifyDiscord } from "./notify-discord-action";
 export type MovieDataType = {
   title: string;
   watched: boolean;
-  //   year: number;
+  liked: boolean;
+  vote_average: number;
+  release_date: string;
 };
 
 // i find this pattern of types very cool... much better than what i had before, e.g. `error: string | null`
@@ -70,8 +73,10 @@ export async function SearchMoviesAction(
     const movie: MovieDataType = {
       title: result["title"],
       watched: result["watched"],
+      liked: result["liked"],
+      release_date: result["release_date"],
+      vote_average: result["vote_average"],
     };
-    console.log("movie:", movie);
 
     // add movie to db
     await prisma.movie.create({ data: movie });
@@ -81,18 +86,26 @@ export async function SearchMoviesAction(
     // return data to browser
     return { error: null, data: movie };
   } catch (err) {
-    console.log(err);
-
-    if (err instanceof Error) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      // https://www.prisma.io/docs/orm/prisma-client/debugging-and-troubleshooting/handling-exceptions-and-errors
+      if (err.code === "P2002") {
+        return {
+          error: "That movie is already in my bleedin' database!",
+          data: null,
+        };
+      }
+    } else if (err instanceof Error) {
       if (err.message.includes("...")) {
         return {
-          error: "relevant msg...",
+          error:
+            // TODO: finish this
+            ">> ... meaningful msg here...",
           data: null,
         };
       }
     }
 
     // fallback for unknown error (without details... see log for details)
-    return { error: "Unexpected error occurred", data: null };
+    return { error: `Unexpected error occurred: ${err}`, data: null };
   }
 }

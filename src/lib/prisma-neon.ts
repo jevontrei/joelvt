@@ -1,4 +1,4 @@
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
