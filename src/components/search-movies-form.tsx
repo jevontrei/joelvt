@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { Input } from "./ui/input";
-// import { Label } from "./ui/label";
+import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import {
@@ -48,7 +48,9 @@ export default function SearchMoviesForm() {
       <div className="p-8 flex flex-col items-center">
         <form onSubmit={handleSubmit} className="w-64 space-y-2">
           <div className="space-2">
-            {/* <Label htmlFor="title">Add a movie to my database</Label> */}
+            <Label htmlFor="title" className="p-2 flex justify-center">
+              Request I watch a movie
+            </Label>
             <Input id="title" name="title" placeholder="jaws" />
           </div>
 
