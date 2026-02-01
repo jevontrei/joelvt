@@ -14,6 +14,9 @@ export default function Footer() {
           href="https://github.com/jevontrei/"
           target="_blank"
           rel="noopener noreferrer"
+          // TODO: fix this color/hover stuff
+          // NOTE: i added fill="currentColor" in the .svg itself
+          className="text-gray-200 hover:grayscale-text-black transition-colors"
         >
           <Image src="/github.svg" alt="GitHub logo" width={24} height={24} />
         </Link>
@@ -21,6 +24,7 @@ export default function Footer() {
           href="https://www.linkedin.com/in/joel-von-treifeldt/"
           target="_blank"
           rel="noopener noreferrer"
+          className="hover:grayscale-50"
         >
           <Image
             src="/linkedin-logo-svgrepo-com.svg"
