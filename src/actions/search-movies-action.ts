@@ -38,7 +38,6 @@ export async function SearchMoviesAction(
 
     const movie: TmdbMovieDataType = {
       title: data["title"],
-      watched: data["watched"],
       release_date: data["release_date"],
       vote_average: data["vote_average"],
     };

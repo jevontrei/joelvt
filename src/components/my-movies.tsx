@@ -79,6 +79,7 @@ export default function MyMovies() {
     setIsPending(true);
     try {
       toast.info("Seeding database...");
+      const start = Date.now();
       const { error, count } = await SeedMoviesAction();
 
       if (error) {
@@ -91,10 +92,16 @@ export default function MyMovies() {
         setDbIsEmpty(true);
         toast.info("Database is empty!");
         return;
+      } else {
+        setDbIsEmpty(false);
       }
 
       // only runs if no error
       toast.success("Wowee! The movies database has been seeded! Now fetch it");
+      const ms = Date.now() - start;
+      console.log(
+        `>> Seconds elapsed during seeding = ${Math.floor(ms / 1000)}`,
+      );
 
       // now need to re-query db (state will be state therein)
       QueryMoviesDbAction();
@@ -196,24 +203,32 @@ export default function MyMovies() {
 
   return (
     <div className="my-8 mx-4 flex flex-col items-center space-y-2">
-      <div className="flex flex-row space-x-4">
-        <form onSubmit={handleFetchSubmit} className="mb-0">
-          <Button className="w-48" disabled={isPending}>
-            Fetch database
-          </Button>
-        </form>
-
-        <form onSubmit={handleSeedSubmit} className="mb-0">
-          <Button className="w-48" disabled={isPending}>
-            Seed database
-          </Button>
-        </form>
-      </div>
+      {/* {!dbIsEmpty && ( */}
+      <form onSubmit={handleFetchSubmit} className="mb-0">
+        <Button className="w-64" disabled={isPending}>
+          Fetch database
+        </Button>
+      </form>
+      {/* )} */}
 
       {dbIsEmpty && (
-        <div className="my-2 px-4 py-2 bg-pink-200 rounded-md">
-          Looks like the database is empty! Better go fetch some bloody movies
-          cobber!
+        <div>
+          <div className="my-2 px-4 py-2 bg-pink-200 rounded-md flex flex-col items-center">
+            <p>Looks like the database is empty.</p>
+            <p>
+              Better go seed the bloody database before fetching again, cobber!
+            </p>
+            <p>
+              And be goddamn patient, okay? It&apos;s just 30 frickin seconds
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <form onSubmit={handleSeedSubmit} className="mb-0">
+              <Button className="w-64" disabled={isPending}>
+                Seed database
+              </Button>
+            </form>
+          </div>
         </div>
       )}
 
@@ -223,7 +238,7 @@ export default function MyMovies() {
             <thead className="sticky top-0 bg-gray-200">
               <tr>
                 <th className="text-left">Movie</th>
-                <th className="text-left">Joel watched</th>
+                <th className="text-left">Has Joel watched?</th>
                 <th className="text-left">Joel&apos;s rating</th>
                 {/* <th className="text-left">Added by</th> */}
                 <th className="text-left"></th>
@@ -240,7 +255,7 @@ export default function MyMovies() {
                   {/* TODO: use tooltips (using react-tooltip) */}
                   <td>
                     <Button
-                      className={`w-12 ${movie.watched ? "bg-blue-500" : "bg-gray-300"} hover:bg-yellow-300 hover:text-black`}
+                      className={`w-12 ${movie.watched ? "bg-transparent border text-black" : "bg-gray-400"} hover:bg-yellow-300 hover:text-black`}
                       disabled={isPending}
                       onClick={() => handleToggleWatchedClick(movie.id)}
                     >
@@ -266,9 +281,9 @@ export default function MyMovies() {
                       }`}
                     >
                       <strong>{movie.vote_average?.toFixed(1)}</strong>
-                    </div> 
+                      </div> 
                   </td>
-                    */}
+                  */}
 
                   {/* TODO */}
                   {/* <td>movie.addedBy</td> */}
@@ -287,6 +302,18 @@ export default function MyMovies() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {sortedMovies && (
+        <div className="flex flex-col items-center mt-8 space-y-2">
+          <p>Not much fetched from database? </p>
+          <p>Click here to seed the stupid thing.</p>
+          <p>And be goddamn patient, okay?</p>
+          <form onSubmit={handleSeedSubmit} className="mb-0">
+            <Button className="w-64" disabled={isPending}>
+              Seed database
+            </Button>
+          </form>
         </div>
       )}
     </div>
