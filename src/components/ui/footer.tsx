@@ -34,7 +34,7 @@ export default function Footer() {
           />
         </Link>
       </div>
-      <p className="mt-4">&copy; JVT 2026</p>
+      {/* <p className="mt-4">&copy; JVT 2026</p> */}
     </footer>
   );
 }
