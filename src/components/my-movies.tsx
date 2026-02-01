@@ -239,7 +239,7 @@ export default function MyMovies() {
               <tr>
                 <th className="text-left">Movie</th>
                 <th className="text-left">Has Joel watched?</th>
-                <th className="text-left">Joel&apos;s rating</th>
+                <th className="text-left">Joel&apos;s rating out of 7</th>
                 {/* <th className="text-left">Added by</th> */}
                 <th className="text-left"></th>
               </tr>
