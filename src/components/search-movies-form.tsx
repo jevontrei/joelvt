@@ -5,16 +5,16 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import {
-  SearchMoviesAction,
-  MovieDataType,
-} from "@/actions/search-movies-action";
+import { SearchMoviesAction } from "@/actions/search-movies-action";
+import { TmdbMovieDataType } from "@/actions/call-tmdb-api-action";
 
 // https://developer.themoviedb.org/docs/rate-limiting
 
 export default function SearchMoviesForm() {
   const [isPending, setIsPending] = useState(false);
-  const [movieResults, setMovieResults] = useState<MovieDataType | null>(null);
+  const [movieResults, setMovieResults] = useState<TmdbMovieDataType | null>(
+    null,
+  );
 
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
@@ -49,7 +49,7 @@ export default function SearchMoviesForm() {
         <form onSubmit={handleSubmit} className="w-64 space-y-2">
           <div className="space-2">
             <Label htmlFor="title" className="p-2 flex justify-center">
-              Request I watch a movie
+              Request that I watch a movie
             </Label>
             <Input id="title" name="title" placeholder="jaws" />
           </div>

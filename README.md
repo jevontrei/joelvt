@@ -27,6 +27,7 @@ My own corner of the internet. For anything and everything, but mainly to learn.
 
 ## TODO
 
+- https://http.cat/
 - movies i've watched (api)
   - with a button for people to request I watch a movie
 - books i've read (api)

@@ -1,20 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { Movie } from "@/generated/prisma/client";
 import { DeleteMovieAction } from "@/actions/delete-movie-action";
 import { QueryMoviesDbAction } from "@/actions/query-movies-db-action";
-import { ToggleLikedStatusAction } from "@/actions/toggle-liked-status-action";
 import { ToggleWatchedStatusAction } from "@/actions/toggle-watched-status-action";
+import { SeedMoviesAction } from "@/actions/seed-movies-action";
+
+// we needed this Record<> type because object keys are usually strings
+const ratingColors: Record<number, string> = {
+  0: "bg-transparent",
+  1: "bg-red-500",
+  2: "bg-orange-500",
+  3: "bg-yellow-500",
+  4: "bg-lime-500",
+  5: "bg-green-500",
+  6: "bg-blue-500",
+  7: "bg-fuchsia-500",
+};
 
 export default function MyMovies() {
   const [myMovies, setMyMovies] = useState<Movie[] | null>(null);
   const [dbIsEmpty, setDbIsEmpty] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
+  // TODO: let user sort movies by any column
+  const sortedMovies = useMemo(() => {
+    if (!myMovies) return null;
+
+    return [...myMovies].sort((a, b) => {
+      // handle null ratings first
+      if (a.rating === null) return 1; // send nulls to end
+      if (b.rating === null) return -1; // send nulls to end
+      // return negative if a should come before b
+      // return positive if b should come before a
+      // return 0 if equal
+      return b.rating - a.rating; // highest rating first
+    });
+  }, [myMovies]);
+
+  async function handleFetchSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     setIsPending(true);
 
@@ -47,11 +74,50 @@ export default function MyMovies() {
     }
   }
 
+  async function handleSeedSubmit(evt: React.FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    setIsPending(true);
+    try {
+      toast.info("Seeding database...");
+      const start = Date.now();
+      const { error, count } = await SeedMoviesAction();
+
+      if (error) {
+        console.log("[seed-movies-action] Failed to seed movies:", error);
+        toast.error(error);
+        return;
+      }
+
+      if (!count || count === 0) {
+        setDbIsEmpty(true);
+        toast.info("Database is empty!");
+        return;
+      } else {
+        setDbIsEmpty(false);
+      }
+
+      // only runs if no error
+      toast.success("Wowee! The movies database has been seeded! Now fetch it");
+      const ms = Date.now() - start;
+      console.log(
+        `>> Seconds elapsed during seeding = ${Math.floor(ms / 1000)}`,
+      );
+
+      // now need to re-query db (state will be state therein)
+      QueryMoviesDbAction();
+    } catch (err) {
+      console.log("Error from my-movies.tsx:", err);
+      toast.error(`Network error: ${err}`);
+    } finally {
+      // always re-enable button
+      setIsPending(false);
+    }
+  }
   async function handleToggleWatchedClick(movieId: string) {
     // note: we don't need evt or evt.preventDefault() here because handleToggleWatchedClick is not coming from a form element or link click -- so there's no reload to prevent
     setIsPending(true);
 
-    // TODO: while mark as un/watched buttons are pending and grayed out, they creep over into the table header. looks bad. fix it. (same for liked toggle button?)
+    // TODO: while mark as un/watched buttons are pending and grayed out, they creep over into the table header. looks bad. fix it.
 
     try {
       toast.info("Thinking...");
@@ -76,48 +142,6 @@ export default function MyMovies() {
 
       // only runs if no error
       toast.success("Hell yeah!");
-
-      //  update myMovies with data
-      if (!myMovies) return; // early return just to satisfy ts (myMovies won't be null here because of {myMovies && ...} below)
-      const updatedMyMovies = myMovies.map((movie) =>
-        movie.id === data.id ? data : movie,
-      );
-      setMyMovies(updatedMyMovies);
-    } catch (err) {
-      console.log("Error from my-movies.tsx:", err);
-      toast.error(`Network error: ${err}`);
-    } finally {
-      // always re-enable button
-      setIsPending(false);
-    }
-  }
-  async function handleToggleLikedClick(movieId: string) {
-    // note: we don't need evt or evt.preventDefault() here because handleToggleLikedClick is not coming from a form element or link click -- so there's no reload to prevent
-    setIsPending(true);
-
-    try {
-      toast.info("Thinking...");
-
-      const { error, data } = await ToggleLikedStatusAction(movieId);
-
-      if (error) {
-        console.log(
-          "[toggle-liked-status-action] Failed to fetch movies or toggle status:",
-          error,
-        );
-        toast.error(error);
-        return;
-      }
-
-      // i don't think this would happen, except maybe in a crazy unlucky scenario (?)
-      if (!data) {
-        setDbIsEmpty(true);
-        toast.info("Database is empty!");
-        return;
-      }
-
-      // only runs if no error
-      toast.success("Yippee!");
 
       //  update myMovies with data
       if (!myMovies) return; // early return just to satisfy ts (myMovies won't be null here because of {myMovies && ...} below)
@@ -179,44 +203,59 @@ export default function MyMovies() {
 
   return (
     <div className="my-8 mx-4 flex flex-col items-center space-y-2">
-      <form onSubmit={handleSubmit} className="mb-0">
+      {/* {!dbIsEmpty && ( */}
+      <form onSubmit={handleFetchSubmit} className="mb-0">
         <Button className="w-64" disabled={isPending}>
-          Fetch/refresh my database
+          Fetch database
         </Button>
       </form>
+      {/* )} */}
 
       {dbIsEmpty && (
-        <div className="my-2 px-4 py-2 bg-pink-200 rounded-md">
-          Looks like the database is empty! Better go fetch some bloody movies
-          cobber!
+        <div>
+          <div className="my-2 px-4 py-2 bg-pink-200 rounded-md flex flex-col items-center">
+            <p>Looks like the database is empty.</p>
+            <p>
+              Better go seed the bloody database before fetching again, cobber!
+            </p>
+            <p>
+              And be goddamn patient, okay? It&apos;s just 30 frickin seconds
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <form onSubmit={handleSeedSubmit} className="mb-0">
+              <Button className="w-64" disabled={isPending}>
+                Seed database
+              </Button>
+            </form>
+          </div>
         </div>
       )}
 
-      {myMovies && (
-        <div className="mt-2 max-h-96 overflow-y-auto border rounded">
+      {sortedMovies && (
+        <div className="mt-2 max-h-96 overflow-x-auto overflow-y-auto border rounded">
           <table className="w-full">
             <thead className="sticky top-0 bg-gray-200">
               <tr>
                 <th className="text-left">Movie</th>
-                <th className="text-left">Joel watched</th>
-                <th className="text-left">Joel liked</th>
-                <th className="text-left">Rating</th>
+                <th className="text-left">Has Joel watched?</th>
+                <th className="text-left">Joel&apos;s rating</th>
                 {/* <th className="text-left">Added by</th> */}
                 <th className="text-left"></th>
               </tr>
             </thead>
             <tbody>
-              {/* TODO: sort movies by watched, and eventually sort by any column */}
-              {myMovies.map((movie) => (
+              {sortedMovies.map((movie) => (
                 <tr key={movie.id} className="even:bg-gray-50">
                   <td>{movie.title}</td>
 
                   {/* TODO: add release_date (AND POSTER) to api call and db */}
                   {/* <td>{movie.release_date}</td> */}
 
+                  {/* TODO: use tooltips (using react-tooltip) */}
                   <td>
                     <Button
-                      className={`w-12 ${movie.watched ? "bg-blue-500" : "bg-gray-300"} hover:bg-yellow-300 hover:text-black`}
+                      className={`w-12 ${movie.watched ? "bg-transparent border text-black" : "bg-gray-400"} hover:bg-yellow-300 hover:text-black`}
                       disabled={isPending}
                       onClick={() => handleToggleWatchedClick(movie.id)}
                     >
@@ -224,21 +263,13 @@ export default function MyMovies() {
                     </Button>
                   </td>
 
-                  {/* TODO: use tooltips (using react-tooltip) */}
-                  <td>
-                    <Button
-                      // don't need type="submit" here; that's only for forms
-                      className={`w-16 ${!movie.watched ? "bg-transparent text-transparent" : movie.liked ? "bg-green-500" : "bg-gray-300"} hover:bg-yellow-300 hover:text-black`}
-                      // no point displaying the liked button if i haven't seen the movie
-                      // TODO: always set db liked to false if movie is or gets set to unwatched
-                      disabled={isPending || !movie.watched}
-                      onClick={() => handleToggleLikedClick(movie.id)}
-                    >
-                      {!movie.watched ? "" : movie.liked ? "Liked" : "Eh"}
-                    </Button>
+                  <td
+                    className={`w-12 h-9 m-2 rounded-md text-sm text-white flex items-center justify-center ${movie.watched && movie.rating ? ratingColors[movie.rating] : "bg-transparent"}`}
+                  >
+                    <strong>{movie.watched && movie.rating}</strong>
                   </td>
 
-                  {/* TODO: color scale by rating CONTINUOUSLY! */}
+                  {/* 
                   <td>
                     <div
                       className={`w-12 px-4 py-2 text-sm flex items-center justify-center text-primary-foreground rounded-md ${
@@ -250,8 +281,9 @@ export default function MyMovies() {
                       }`}
                     >
                       <strong>{movie.vote_average?.toFixed(1)}</strong>
-                    </div>
+                      </div> 
                   </td>
+                  */}
 
                   {/* TODO */}
                   {/* <td>movie.addedBy</td> */}
@@ -270,6 +302,19 @@ export default function MyMovies() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {sortedMovies && (
+        // TODO: add a db.length < 100 state and only show this msg then
+        <div className="flex flex-col items-center mt-8 space-y-2">
+          <p className="text-sm">Not much fetched from database? </p>
+          <p className="text-sm">Click here to seed the stupid thing.</p>
+          <p className="text-sm">And be goddamn patient, okay?</p>
+          <form onSubmit={handleSeedSubmit} className="mb-0">
+            <Button className="w-64" disabled={isPending}>
+              Seed database
+            </Button>
+          </form>
         </div>
       )}
     </div>
