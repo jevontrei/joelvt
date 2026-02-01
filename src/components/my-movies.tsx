@@ -27,6 +27,7 @@ export default function MyMovies() {
   const [isPending, setIsPending] = useState(false);
 
   // TODO: let user sort movies by any column
+  // "useMemo is a React Hook that lets you cache the result of a calculation between re-renders"
   const sortedMovies = useMemo(() => {
     if (!myMovies) return null;
 
