@@ -11,7 +11,7 @@ export default function Footer() {
         {/* "Files inside public can then be referenced by your code starting from the base URL (/)."" */}
         {/* i.e. don't put /public in src="" */}
         <Link
-          href="https://github.com/jevontrei/"
+          href="https://github.com/jevontrei/joelvt"
           target="_blank"
           rel="noopener noreferrer"
           // TODO: fix this color/hover stuff
