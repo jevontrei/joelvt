@@ -49,7 +49,7 @@ export default function SearchMoviesForm() {
         <form onSubmit={handleSubmit} className="w-64 space-y-2">
           <div className="space-2">
             <Label htmlFor="title" className="p-2 flex justify-center">
-              Request I watch a movie
+              Request that I watch a movie
             </Label>
             <Input id="title" name="title" placeholder="jaws" />
           </div>

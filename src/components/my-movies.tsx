@@ -305,10 +305,11 @@ export default function MyMovies() {
         </div>
       )}
       {sortedMovies && (
+        // TODO: add a db.length < 100 state and only show this msg then
         <div className="flex flex-col items-center mt-8 space-y-2">
-          <p>Not much fetched from database? </p>
-          <p>Click here to seed the stupid thing.</p>
-          <p>And be goddamn patient, okay?</p>
+          <p className="text-sm">Not much fetched from database? </p>
+          <p className="text-sm">Click here to seed the stupid thing.</p>
+          <p className="text-sm">And be goddamn patient, okay?</p>
           <form onSubmit={handleSeedSubmit} className="mb-0">
             <Button className="w-64" disabled={isPending}>
               Seed database
