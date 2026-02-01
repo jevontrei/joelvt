@@ -5,16 +5,16 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import {
-  SearchMoviesAction,
-  MovieDataType,
-} from "@/actions/search-movies-action";
+import { SearchMoviesAction } from "@/actions/search-movies-action";
+import { TmdbMovieDataType } from "@/actions/call-tmdb-api-action";
 
 // https://developer.themoviedb.org/docs/rate-limiting
 
 export default function SearchMoviesForm() {
   const [isPending, setIsPending] = useState(false);
-  const [movieResults, setMovieResults] = useState<MovieDataType | null>(null);
+  const [movieResults, setMovieResults] = useState<TmdbMovieDataType | null>(
+    null,
+  );
 
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
