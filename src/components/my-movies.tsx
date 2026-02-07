@@ -1,5 +1,6 @@
 "use client";
 
+import seedData from "@/seed-movies.json" assert { type: "json" };
 import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
@@ -8,7 +9,13 @@ import { DeleteMovieAction } from "@/actions/delete-movie-action";
 import { QueryMoviesDbAction } from "@/actions/query-movies-db-action";
 import { ToggleWatchedStatusAction } from "@/actions/toggle-watched-status-action";
 import { SeedMoviesAction } from "@/actions/seed-movies-action";
-import { Database, Sprout, Trash2 } from "lucide-react";
+import {
+  Database,
+  Sprout,
+  ToggleLeft,
+  ToggleRight,
+  Trash2,
+} from "lucide-react";
 
 // we needed this Record<> type because object keys are usually strings
 const ratingColors: Record<number, string> = {
@@ -22,7 +29,10 @@ const ratingColors: Record<number, string> = {
   7: "bg-fuchsia-500",
 };
 
-export default function MyMovies() {
+// make an array version (shallow copy) for mapping over below
+const ratingColorsArray = Object.entries(ratingColors).slice(1, 8);
+
+export default function MyMoviesDb() {
   const [myMovies, setMyMovies] = useState<Movie[] | null>(null);
   const [dbIsEmpty, setDbIsEmpty] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -43,7 +53,7 @@ export default function MyMovies() {
     });
   }, [myMovies]);
 
-  async function handleFetchSubmit(evt: React.FormEvent<HTMLFormElement>) {
+  async function handleRefreshDbSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     setIsPending(true);
 
@@ -52,7 +62,7 @@ export default function MyMovies() {
       const { error, data } = await QueryMoviesDbAction();
 
       if (error) {
-        console.log("[search-movies-action] Failed to fetch movies:", error);
+        console.log("[query-movies-db-action] Failed to fetch movies:", error);
         toast.error(error);
         return;
       }
@@ -76,7 +86,7 @@ export default function MyMovies() {
     }
   }
 
-  async function handleSeedSubmit(evt: React.FormEvent<HTMLFormElement>) {
+  async function handleSeedDbSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     setIsPending(true);
     try {
@@ -160,7 +170,7 @@ export default function MyMovies() {
     }
   }
 
-  async function handleDeleteClick(movieId: string) {
+  async function handleDeleteMovieClick(movieId: string) {
     setIsPending(true);
 
     try {
@@ -205,16 +215,8 @@ export default function MyMovies() {
 
   return (
     <div className="my-8 mx-4 flex flex-col items-center space-y-2">
-      {/* {!dbIsEmpty && ( */}
-      <form onSubmit={handleFetchSubmit} className="mb-0">
-        <Button className="w-64" disabled={isPending}>
-          <Database />
-          Fetch database
-        </Button>
-      </form>
-      {/* )} */}
-
       {dbIsEmpty && (
+        // TODO: NEED TO RETHINK THIS BEHAVIOUR! the 'db is empty' msg is appearing after seeding...
         <div>
           <div className="my-2 px-4 py-2 bg-pink-200 rounded-md flex flex-col items-center">
             <p>Looks like the database is empty.</p>
@@ -222,72 +224,78 @@ export default function MyMovies() {
               Better go seed the bloody database before fetching again, cobber!
             </p>
             <p>
-              And be goddamn patient, okay? It&apos;s just 30 frickin seconds
+              And be goddamn patient, okay? It&apos;s just 30 frickin seconds.
             </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <form onSubmit={handleSeedSubmit} className="mb-0">
-              <Button className="w-64" disabled={isPending}>
-                <Sprout />
-                Seed database
-              </Button>
-            </form>
           </div>
         </div>
       )}
 
       {sortedMovies && (
-        <div className="mt-2 max-h-96 overflow-x-auto overflow-y-auto border rounded">
+        <div className="mt-2 max-h-128 overflow-x-auto overflow-y-auto border rounded">
           <table className="w-full">
             <thead className="sticky top-0 bg-gray-200">
               <tr>
-                <th className="text-left">Movie</th>
-                <th className="text-left">Has Joel watched?</th>
-                <th className="text-left">Joel&apos;s rating out of 7</th>
-                <th className="text-left">TMDb Rating out of 10</th>
-                {/* <th className="text-left">Added by</th> */}
-                <th className="text-left"></th>
+                <th className="text-left">Title</th>
+                <th className="text-center">Released</th>
+                <th className="text-center">Watched?</th>
+                <th className="text-center">Joel&apos;s rating</th>
+                <th className="text-center">TMDb rating</th>
+                {/* <th className="text-center">Added by</th> */}
+                <th className="text-center"></th>
               </tr>
             </thead>
             <tbody>
               {sortedMovies.map((movie) => (
                 // TODO: center buttons under table headings
                 <tr key={movie.id} className="even:bg-gray-50">
-                  <td
-                  // className="flex justify-center"
-                  >
-                    {movie.title}
+                  <td>
+                    <div className="w-48 overflow-auto">{movie.title}</div>
                   </td>
 
                   {/* TODO: add release_date (AND POSTER) to api call and db */}
-                  {/* <td>{movie.release_date}</td> */}
+                  <td>{movie.release_date}</td>
 
                   {/* TODO: use tooltips (using react-tooltip) */}
-                  <td
-                  // className="flex justify-center"
-                  >
-                    <Button
-                      className={`w-12 ${movie.watched ? "bg-transparent border text-black" : "bg-gray-400"} hover:bg-yellow-300 hover:text-black`}
-                      disabled={isPending}
-                      onClick={() => handleToggleWatchedClick(movie.id)}
-                    >
-                      {movie.watched ? "Yes" : "No"}
-                    </Button>
+
+                  <td>
+                    <div className="w-full flex justify-center">
+                      <Button
+                        className={`w-12  text-black ${movie.watched ? "bg-blue-400" : "bg-gray-200"} hover:bg-yellow-300 `}
+                        disabled={isPending}
+                        onClick={() => handleToggleWatchedClick(movie.id)}
+                      >
+                        {movie.watched ? (
+                          // make toggle icons bigger
+                          <ToggleRight size={48} />
+                        ) : (
+                          <ToggleLeft width={48} />
+                        )}
+                      </Button>
+                    </div>
                   </td>
 
-                  <td
-                    className={`
-                      // flex justify-center 
-                      w-12 h-9 m-2 rounded-md text-sm text-white ${movie.watched && movie.rating ? ratingColors[movie.rating] : "bg-transparent"}`}
-                  >
-                    <strong>{movie.watched && movie.rating}</strong>
+                  {/* TODO: fix this height for overflowed rows */}
+                  <td className="h-full m-2 rounded-md text-sm flex items-center">
+                    <div className="w-full">
+                      {ratingColorsArray.map((color, i) => (
+                        <span
+                          key={i}
+                          // need to use inline-block because by default, spans (and other inline elements) ignore width and height properties
+                          className={`${
+                            movie.watched &&
+                            movie.rating &&
+                            movie.rating >= Number(color[0])
+                              ? `${ratingColors[i + 1]} inline-block size-3`
+                              : "bg-transparent"
+                          }`}
+                        ></span>
+                      ))}
+                    </div>
                   </td>
 
-                  <td
-                  // className="flex justify-center"
-                  >
+                  <td>
                     <div
-                      className={`w-12 px-4 py-2 text-sm flex items-center justify-center  text-black rounded-md`}
+                      className={`w-full px-4 py-2 text-sm flex items-center justify-center  text-black rounded-md`}
                       //  ${
                       // movie.vote_average
                       // ? movie.vote_average > 7.0
@@ -309,15 +317,17 @@ export default function MyMovies() {
                   <td
                   // className="w-full flex justify-center"
                   >
-                    {/* TODO: users can only delete movies they added */}
-                    <Button
-                      className="max-w-sm bg-red-200 hover:bg-destructive"
-                      disabled={isPending}
-                      onClick={() => handleDeleteClick(movie.id)}
-                    >
-                      <Trash2 />
-                      Delete
-                    </Button>
+                    <div className="w-full mx-2">
+                      {/* TODO: users can only delete movies they added */}
+                      <Button
+                        className="max-w-sm bg-destructive"
+                        disabled={isPending}
+                        size="sm"
+                        onClick={() => handleDeleteMovieClick(movie.id)}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -325,20 +335,37 @@ export default function MyMovies() {
           </table>
         </div>
       )}
-      {sortedMovies && (
-        // TODO: add a db.length < 100 state and only show this msg then
-        <div className="flex flex-col items-center mt-8 space-y-2">
-          <p className="text-sm">Not much fetched from database? </p>
-          <p className="text-sm">Click here to seed the stupid thing.</p>
-          <p className="text-sm">And be goddamn patient, okay?</p>
-          <form onSubmit={handleSeedSubmit} className="mb-0">
-            <Button className="w-64" disabled={isPending}>
-              <Sprout />
-              Seed database
-            </Button>
-          </form>
-        </div>
-      )}
+
+      {/* TODO: show db automatically on load */}
+      {/* TODO: fix logic for showing seed button when db is empty */}
+      <form onSubmit={handleRefreshDbSubmit} className="mb-0">
+        <Button className="w-64" disabled={isPending}>
+          <Database />
+          {isPending ? "Thinking..." : "Refresh database"}
+        </Button>
+      </form>
+
+      {/* {!dbIsEmpty ||
+        (sortedMovies && sortedMovies.length > seedData.length && ( */}
+      {/* // TODO: add a db.length < 100 state and only show this msg then */}
+      <form
+        onSubmit={handleSeedDbSubmit}
+        className="mb-0 mt-12 space-y-2 flex flex-col items-center"
+      >
+        <p className="text-sm">Database looking empty?</p>
+        <p className="text-sm">
+          Click the button below to seed the stupid thing.
+        </p>
+        <p className="text-sm">
+          And be goddamn patient, okay? It&apos;s just 30 seconds.
+        </p>
+        {/*  */}
+        <Button className="w-64" disabled={isPending}>
+          <Sprout />
+          {isPending ? "Thinking..." : "Seed database"}
+        </Button>
+      </form>
+      {/* ))} */}
     </div>
   );
 }
