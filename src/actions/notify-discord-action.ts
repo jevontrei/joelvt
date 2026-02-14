@@ -16,10 +16,10 @@ export async function notifyDiscord(message: string) {
     // return data to browser
     return {
       error: null,
-      data: discordResponse,
+      data: JSON.parse(JSON.stringify(discordResponse)),
     };
   } catch (err) {
-    console.log("Error while notifying Discord:", err);
+    console.log(">> Error while notifying Discord:", err);
     return { error: String(err), data: null };
   }
 }
