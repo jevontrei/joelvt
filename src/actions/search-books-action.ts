@@ -7,14 +7,12 @@ import { notifyDiscord } from "./notify-discord-action";
 
 // define types for the return value of this action; to prevent annoying typescript complaints in search-forecast-form.tsx
 // type export -- must import with exact name
-// TODO: don't do this; just grab the schema's type that already exists
 export type BookDataType = {
   title: string;
   watched: boolean;
   //   year: number;
 };
 
-// i find this pattern of types very cool... much better than what i had before, e.g. `error: string | null`
 type ActionSuccessType = {
   error: null;
   data: BookDataType;
@@ -28,8 +26,6 @@ type ActionErrorType = {
 // the ~pipe here ("|") is typescript union type? not a normal OR operator
 type ActionResultType = ActionSuccessType | ActionErrorType;
 
-// TODO: handle when user enters crazy string -> timeout
-
 // Promise here is a generic type; <ActionResultType> is a generic type argument
 export async function SearchBooksAction(
   formData: FormData,
@@ -41,7 +37,7 @@ export async function SearchBooksAction(
 
     // validate
     if (!title) {
-      console.log(">> Title error...");
+      console.error(">> Title error...");
       return {
         error: "Please enter your title",
         data: null,
@@ -62,23 +58,18 @@ export async function SearchBooksAction(
 
     const response = await fetch(url);
     const json = await response.json();
-    console.log("json:", json);
     if (json.error) {
       // why isn't this printing the whole json error but the above console log is?
-      console.log(`>> Error while searching books: ${json}`);
-      return { error: "...", data: null };
+      console.error(`>> Error while searching books: ${json}`);
+      return { error: "Error", data: null };
     }
     const results: BookDataType[] = json["results"];
-    // console.log("results: ", results);
     // const result = json["results"][0];
-    // console.log(Object.keys(json));
-    // console.log(result["title"]);
 
     const books: BookDataType[] = results.map((book) => ({
       title: book["title"],
       watched: book["watched"],
     }));
-    console.log("book:", books);
     const book = books[0];
 
     // add book to db
@@ -89,15 +80,13 @@ export async function SearchBooksAction(
     // return data to browser
     return { error: null, data: book };
   } catch (err) {
-    console.log(err);
+    console.error(`Error: ${err}`);
 
     if (err instanceof Error) {
-      if (err.message.includes("...")) {
-        return {
-          error: "relevant msg...",
-          data: null,
-        };
-      }
+      return {
+        error: "Error occurred",
+        data: null,
+      };
     }
 
     // fallback for unknown error (without details... see log for details)

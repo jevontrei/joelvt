@@ -11,7 +11,6 @@ My own corner of the internet. For anything and everything, but mainly to learn.
 - ORM: prisma
 - Database:
   - postgres (neon)
-  - postgres (Marko's NAS)
 - Storage: S3
 - Emails: nodemailer
 - Auth: better auth

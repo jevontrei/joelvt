@@ -33,13 +33,10 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
     for (const movie of seedData) {
       if (!movie.title) {
         // could rating here possibly be missing? try it - try seeding with a missing rating
-        console.log(
-          `>> Skipping movie with no title and rating: ${movie.rating}`,
-        );
         continue;
       }
       const result = await CallTmdbApiAction(movie.title);
-      if (result.data) {
+      if (result.data && result.data.length > 0) {
         movies.push({
           // this just grabs the first result
           title: result.data[0]["title"],
@@ -51,7 +48,7 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
           watched: movie.watched,
         });
       } else {
-        console.log(
+        console.error(
           `>> Failed seeding movie: ${movie.title} - Error: ${result.error}`,
         );
       }
@@ -63,37 +60,16 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
       skipDuplicates: true,
     });
 
-    console.log(`\n>> Saved ${dbResponse.count} movies to database\n`);
-
     // return data to browser
     return { error: null, count: dbResponse.count };
   } catch (err) {
     // log full error details for debugging
-    // console.log(">> Error while seeding movies:", err);
-    console.log(">> Error while seeding movies...");
+    console.error(">> Error while seeding movies:", err);
 
-    // TODO: distinguish between json seed file error, API error and db error
-    // handle specific error types
     if (err instanceof Error) {
-      if (err.message.includes("...")) {
-        return {
-          error: "...",
-          count: null,
-        };
-      }
-
-      if (err.message.includes("....")) {
-        return {
-          error: "....",
-          count: null,
-        };
-      }
-
-      // return specific error msg
       return { error: err.message, count: null };
     }
 
-    // fallback for unknown errors (without details)... see logs for details
     return { error: "Unexpected error occurred", count: null };
   }
 }

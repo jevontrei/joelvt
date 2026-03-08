@@ -9,8 +9,6 @@ export default function Page() {
     <div className="flex flex-col items-center">
       <h2 className="text-6xl my-8 mx-4">Recommend</h2>
 
-      {/* TODO: back button */}
-
       <Image
         className="mt-12"
         src="/tmdb.svg"

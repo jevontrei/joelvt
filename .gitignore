@@ -51,3 +51,6 @@ next-env.d.ts
 
 # to get builds to work while pages are WIP
 _archive/
+
+# misc
+CLAUDE.md

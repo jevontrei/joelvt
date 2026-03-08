@@ -25,7 +25,6 @@ model Movie {
   release_date String?
   vote_average Float?
   watched      Boolean? @default(false)
-  // TODO: make rating null if watched is false
   rating       Int?
   // added_by     String?
 

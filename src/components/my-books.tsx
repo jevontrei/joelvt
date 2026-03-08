@@ -21,7 +21,7 @@ export default function MyBooks() {
       const { error, data } = await QueryBooksDbAction();
 
       if (error) {
-        console.log(">> [search-books-action] Failed to fetch books:", error);
+        console.error(">> [search-books-action] Failed to fetch books:", error);
         toast.error(error);
         return;
       }
@@ -33,11 +33,10 @@ export default function MyBooks() {
       }
 
       // only runs if no error
-      toast.success("Hell yeah!");
-      // TODO: this still doesn't trigger a re-render of the table... when i search a book, my db does get updated, but the "my books" table doesn't unless i click "see what's in my db" again
+      toast.success("Success!");
       setMyBooks(data);
     } catch (err) {
-      console.log(">> Error from my-books.tsx:", err);
+      console.error(">> Error from my-books.tsx:", err);
       toast.error(`Network error: ${err}`);
     } finally {
       // always re-enable button
@@ -55,7 +54,7 @@ export default function MyBooks() {
       // const { error, data } = await ToggleReadStatusAction(bookId);
 
       // if (error) {
-      //   console.log(
+      //   console.error(
       //     ">> [toggle-read-status-action] Failed to fetch books or toggle status:",
       //     error,
       //   );
@@ -70,7 +69,7 @@ export default function MyBooks() {
       // }
 
       // only runs if no error
-      toast.success("Hell yeah!");
+      toast.success("Success!");
 
       //  update myBooks with data
       if (!myBooks) return; // early return just to satisfy ts (myBooks won't be null here because of {myBooks && ...} below)
@@ -79,7 +78,7 @@ export default function MyBooks() {
       // );
       // setMyBooks(updatedMyBooks);
     } catch (err) {
-      console.log(">> Error from my-books.tsx:", err);
+      console.error(">> Error from my-books.tsx:", err);
       toast.error(`Network error: ${err}`);
     } finally {
       // always re-enable button
