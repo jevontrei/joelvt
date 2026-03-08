@@ -660,10 +660,6 @@
         "watched": true
     },
     {
-        "rating": 5,
-        "watched": true
-    },
-    {
         "title": "memento",
         "rating": 6,
         "watched": true
@@ -701,10 +697,6 @@
     {
         "title": "paterson",
         "rating": 4,
-        "watched": true
-    },
-    {
-        "rating": 6,
         "watched": true
     },
     {
@@ -769,10 +761,6 @@
     },
     {
         "title": "A real pain",
-        "rating": 5,
-        "watched": true
-    },
-    {
         "rating": 5,
         "watched": true
     },

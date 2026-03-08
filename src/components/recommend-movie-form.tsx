@@ -2,7 +2,6 @@
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import { CirclePlus, Search } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -10,7 +9,6 @@ import { useState } from "react";
 import { AddOneMovieToDbAction } from "@/actions/add-one-movie-to-db-action";
 import { FindMoviesAction } from "@/actions/find-movies-action";
 import { TmdbMovieDataType } from "@/actions/call-tmdb-api-action";
-import { redirect } from "next/navigation";
 
 // https://developer.themoviedb.org/docs/rate-limiting
 
@@ -39,13 +37,11 @@ export default function RecommendMovieForm() {
         return;
       }
 
-      // only runs if no error
-      // TODO: do i need to do anything here?
       toast.success(`Found ${data.length} movies`);
       setMovieResults(data);
     } catch (err) {
       if (err instanceof TypeError) {
-        console.log(">> Oops! TypeError:", err);
+        console.error(">> Oops! TypeError:", err);
         return;
       }
       toast.error(`hmmm, ${err}`);
@@ -59,8 +55,7 @@ export default function RecommendMovieForm() {
     setIsPending(true);
     try {
       toast.info("Adding movie to database...");
-      const { error, data } = await AddOneMovieToDbAction(movie);
-      console.log(data);
+      const { error } = await AddOneMovieToDbAction(movie);
 
       if (error) {
         toast.error(error);
@@ -68,14 +63,11 @@ export default function RecommendMovieForm() {
       }
 
       toast.success("Movie added to database");
-      // TODO: figure this out:
-      // setMovieResults([data]);
 
-      // don't use redirect() on the client; use the router
       router.push("/movies");
     } catch (err) {
       if (err instanceof TypeError) {
-        console.log(">> Oops! TypeError:", err);
+        console.error(">> Oops! TypeError:", err);
         return;
       }
       toast.error(`hmmm, ${err}`);
@@ -97,12 +89,6 @@ export default function RecommendMovieForm() {
               placeholder="Enter a movie title..."
             />
           </div>
-
-          {/* <div className="space-y-2"> */}
-          {/* TODO: make this a radio button or dropdown, with watched/unwatched */}
-          {/* <Label htmlFor="watched">Watch status</Label> */}
-          {/* <Input id="watched" name="watched" /> */}
-          {/* </div> */}
 
           <Button type="submit" className="w-64 " disabled={isPending}>
             <Search />

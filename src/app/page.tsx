@@ -1,16 +1,13 @@
-import Image from "next/image";
-
 // default export -- can import with any name
 export default function Page() {
   return (
-    <div className="flex flex-col items-center gap-8">
-      <h2 className="text-6xl mt-8 mx-4">Hi</h2>
-      <Image
-        src="https://http.cat/200"
-        alt="http-200-okay-status-cat"
-        width={400}
-        height={400}
-      />
+    <div className="flex flex-col items-center gap-4">
+      <h2 className="text-6xl mt-8 mb-4 mx-4">Joel von Treifeldt</h2>
+      <p>Welcome to my corner of the internet.</p>
+      <p>
+        This is where I practise Next.js, maintain a movies database and share
+        some photos.
+      </p>
     </div>
   );
 }

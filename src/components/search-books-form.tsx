@@ -25,15 +25,15 @@ export default function SearchBooksForm() {
         toast.error(error);
         return;
       }
-      // only runs if no irrer
-      toast.success("Hell yeah!");
+      // only runs if no error
+      toast.success("Success!");
       setBookResults(data);
     } catch (err) {
       if (err instanceof TypeError) {
-        console.log(">> Oops! TypeError:", err);
+        console.error(">> Oops! TypeError:", err);
         return;
       }
-      toast.error(`hmmm, ${err}`);
+      toast.error(`Hmmm, ${err}`);
     } finally {
       // ALWAYS re-enable button
       setIsPending(false);
@@ -56,12 +56,6 @@ export default function SearchBooksForm() {
           </Label>
           <Input id="title" name="title" />
         </div>
-
-        {/* <div className="space-y-2"> */}
-        {/* TODO: make this a radio button or dropdown, with watched/unwatched */}
-        {/* <Label htmlFor="watched">Watch status</Label> */}
-        {/* <Input id="watched" name="watched" /> */}
-        {/* </div> */}
 
         <Button type="submit" className="w-full" disabled={isPending}>
           Search

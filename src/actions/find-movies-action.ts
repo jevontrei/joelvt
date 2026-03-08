@@ -6,8 +6,6 @@ import { notifyDiscord } from "./notify-discord-action";
 import { CallTmdbApiAction } from "./call-tmdb-api-action";
 import { TmdbActionResultType } from "./call-tmdb-api-action";
 
-// TODO: handle when user enters crazy string -> timeout
-
 // Promise here is a generic type; <ActionResultType> is a generic type argument
 export async function FindMoviesAction(
   inputData: FormData,
@@ -17,8 +15,7 @@ export async function FindMoviesAction(
 
     // validate
     if (!title) {
-      // TODO: this is triggering... understand why and rewrite it
-      console.log(">> Title error...");
+      console.error(">> Title error...");
       return {
         error: "Please enter your title",
         data: null,
@@ -37,26 +34,13 @@ export async function FindMoviesAction(
       release_date: movie["release_date"],
       vote_average: movie["vote_average"],
     }));
-    // console.log("movies: ", movies);
 
     await notifyDiscord(`TMDb API called, found: ${data.length} movies`);
 
     // return data to browser
     return { error: null, data: movies };
   } catch (err) {
-    if (err instanceof Error) {
-      // TODO
-      if (err.message.includes("...")) {
-        return {
-          error:
-            // TODO: finish this
-            ">> ... meaningful msg here...",
-          data: null,
-        };
-      }
-    }
-
-    // fallback for unknown error (without details)... see log for details
+    // fallback for unknown error (without details)
     return { error: `Unexpected error occurred: ${err}`, data: null };
   }
 }

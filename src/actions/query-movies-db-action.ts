@@ -28,7 +28,7 @@ export async function QueryMoviesDbAction(): Promise<DbQueryType> {
       data: dbResponse,
     };
   } catch (err) {
-    console.log(">> Error in database fetching:", err);
+    console.error(">> Error in database fetching:", err);
     return { error: String(err), data: null };
   }
 }

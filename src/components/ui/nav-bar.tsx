@@ -32,11 +32,11 @@ export default function NavBar() {
       link: "/photos",
       icon: <Camera />,
     },
-    {
-      name: "Books",
-      link: "/books",
-      icon: <BookOpen />,
-    },
+    // {
+    //   name: "Books",
+    //   link: "/books",
+    //   icon: <BookOpen />,
+    // },
     // {
     //   name: "Music",
     //   link: "/music",

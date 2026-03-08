@@ -15,8 +15,6 @@ export type DbActionErrorType = {
 };
 export type DbActionResultType = DbActionSuccessType | DbActionErrorType;
 
-// TODO: handle when user enters crazy string -> timeout
-
 // Promise here is a generic type; <ActionResultType> is a generic type argument
 export async function AddOneMovieToDbAction(
   inputData: TmdbMovieDataType,
@@ -51,18 +49,9 @@ export async function AddOneMovieToDbAction(
           data: null,
         };
       }
-    } else if (err instanceof Error) {
-      if (err.message.includes("...")) {
-        return {
-          error:
-            // TODO: finish this
-            ">> ... meaningful msg here...",
-          data: null,
-        };
-      }
     }
 
-    // fallback for unknown error (without details)... see log for details
+    // fallback for unknown error
     return { error: `Unexpected error occurred: ${err}`, data: null };
   }
 }

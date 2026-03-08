@@ -4,8 +4,6 @@ import { prisma } from "@/lib/prisma-neon";
 import { Photo } from "@/generated/prisma/client";
 import { notifyDiscord } from "./notify-discord-action";
 
-// TODO later: add next.js caching
-
 type dbQuerySuccessType = {
   error: null;
   data: Photo[];
@@ -25,8 +23,6 @@ export async function getPhotosAction(): Promise<dbQueryType> {
       orderBy: { display_order: "asc" },
     });
 
-    // console.log("dbResponse:", dbResponse);
-
     await notifyDiscord(
       `Photos metadata db queried: ${dbResponse.length} photos found`,
     );
@@ -37,7 +33,7 @@ export async function getPhotosAction(): Promise<dbQueryType> {
       data: dbResponse,
     };
   } catch (err) {
-    console.log(">> Error in database fetching:", err);
+    console.error(">> Error in database fetching:", err);
     return { error: String(err), data: null };
   }
 }
