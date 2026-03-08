@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { CirclePlus, Search } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddOneMovieToDbAction } from "@/actions/add-one-movie-to-db-action";
 import { FindMoviesAction } from "@/actions/find-movies-action";
@@ -18,6 +19,8 @@ export default function RecommendMovieForm() {
   const [movieResults, setMovieResults] = useState<TmdbMovieDataType[] | null>(
     null,
   );
+
+  const router = useRouter();
 
   async function handleSearchSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
@@ -67,6 +70,9 @@ export default function RecommendMovieForm() {
       toast.success("Movie added to database");
       // TODO: figure this out:
       // setMovieResults([data]);
+
+      // don't use redirect() on the client; use the router
+      router.push("/movies");
     } catch (err) {
       if (err instanceof TypeError) {
         console.log(">> Oops! TypeError:", err);
@@ -74,9 +80,9 @@ export default function RecommendMovieForm() {
       }
       toast.error(`hmmm, ${err}`);
     } finally {
+      // finally blocks should never contain control flow
       // ALWAYS re-enable button
       setIsPending(false);
-      redirect("/movies");
     }
   }
 
@@ -126,7 +132,7 @@ export default function RecommendMovieForm() {
                   {movieResults.map((movie, i) => (
                     <tr key={i} className="even:bg-gray-50">
                       <td>
-                        <div className="w-64 flex justify-start overflow-auto">
+                        <div className="w-48 overflow-auto flex justify-start">
                           {movie.title}
                         </div>
                       </td>

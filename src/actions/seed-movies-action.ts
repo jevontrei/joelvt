@@ -33,7 +33,9 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
     for (const movie of seedData) {
       if (!movie.title) {
         // could rating here possibly be missing? try it - try seeding with a missing rating
-        console.log(`Skipping movie with no title and rating: ${movie.rating}`);
+        console.log(
+          `>> Skipping movie with no title and rating: ${movie.rating}`,
+        );
         continue;
       }
       const result = await CallTmdbApiAction(movie.title);
@@ -50,7 +52,7 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
         });
       } else {
         console.log(
-          `Failed seeding movie: ${movie.title} - Error: ${result.error}`,
+          `>> Failed seeding movie: ${movie.title} - Error: ${result.error}`,
         );
       }
     }
@@ -61,14 +63,14 @@ export async function SeedMoviesAction(): Promise<SeedActionResultType> {
       skipDuplicates: true,
     });
 
-    console.log(`\nSaved ${dbResponse.count} movies to database\n`);
+    console.log(`\n>> Saved ${dbResponse.count} movies to database\n`);
 
     // return data to browser
     return { error: null, count: dbResponse.count };
   } catch (err) {
     // log full error details for debugging
-    // console.log("Error while seeding movies:", err);
-    console.log("Error while seeding movies...");
+    // console.log(">> Error while seeding movies:", err);
+    console.log(">> Error while seeding movies...");
 
     // TODO: distinguish between json seed file error, API error and db error
     // handle specific error types

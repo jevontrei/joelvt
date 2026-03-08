@@ -17,8 +17,8 @@ My own corner of the internet. For anything and everything, but mainly to learn.
 - Auth: better auth
 - Deployment: Vercel (then switch to AWS later?)
 - APIs:
-  - Movies: TMDb
-  - Books: Google Books API
+  - Movies: TMDb (edge server is in LA)
+  - Books: Google Books API (edge server is in Sydney)
   - Banking: Up
   - Music: Spotify Web API or iTunes Search API
   - Geocoding: Nominatim
@@ -37,7 +37,7 @@ My own corner of the internet. For anything and everything, but mainly to learn.
     - Up API / budget / frollo
   - "The Crew" 
     - family-only login with events dashboard, family info etc
-- photons 
+- photos 
   - add orientation to schema - landscape or portrait
   - based around a central leaflet map
   - click on the map to see photos at that place, like in google photos
@@ -81,6 +81,7 @@ npm i react-tooltip
 # db operations
 npx prisma init
 npx prisma db push  # AFTER adding a table/model
+npx prisma validate  # optional
 npx prisma generate  # but also this goes into scripts in package.json so it gets run whenever you `npm run dev`
 prisma migrate dev?
 

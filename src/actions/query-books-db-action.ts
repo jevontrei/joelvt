@@ -1,12 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/prisma-neon";
-import { Movie } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
+import { Book } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
 import { notifyDiscord } from "./notify-discord-action";
 
 type DbQuerySuccessType = {
   error: null;
-  data: Movie[];
+  data: Book[];
 };
 
 type DbQueryErrorType = {
@@ -16,11 +16,15 @@ type DbQueryErrorType = {
 
 type DbQueryType = DbQuerySuccessType | DbQueryErrorType;
 
-export async function QueryMoviesDbAction(): Promise<DbQueryType> {
-  try {
-    const dbResponse = await prisma.movie.findMany();
+//
+// TODO: use Marko's db
+//
 
-    await notifyDiscord(`Movies db queried: ${dbResponse.length} movies found`);
+export async function QueryBooksDbAction(): Promise<DbQueryType> {
+  try {
+    const dbResponse = await prisma.book.findMany();
+
+    await notifyDiscord(`Books db queried: ${dbResponse.length} books found`);
 
     // return data to browser
     return {

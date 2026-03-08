@@ -43,7 +43,7 @@ export async function DeleteMovieAction(
       data: dbResponse,
     };
   } catch (err) {
-    console.log("Error in database fetching/deleting:", err);
+    console.log(">> Error in database fetching/deleting:", err);
     return { error: String(err), data: null };
   }
 }

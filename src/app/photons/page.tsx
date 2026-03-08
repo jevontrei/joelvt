@@ -6,14 +6,14 @@ export default async function Page() {
   const { error, data } = await getPhotosAction();
 
   if (error || !data) {
-    console.log("Error from photos/page.tsx");
+    console.log(">> Error from photos/page.tsx");
     return <div>Error loading photos: {error}</div>;
   }
 
   // use  metadata to display s3 photos (using urls)
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-6xl mt-8 mx-4">Photons</h2>
+      <h2 className="text-6xl mt-8 mx-4">Photos</h2>
 
       <div className="grid grid-cols-3 gap-4 p-8">
         {/* <div className="grid grid-cols-2 gap-4 p-8"> */}

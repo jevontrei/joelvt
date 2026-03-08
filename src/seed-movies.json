@@ -803,8 +803,8 @@
     },
     {
         "title": "hamnet",
-        "rating": 0,
-        "watched": false
+        "rating": 6,
+        "watched": true
     },
     {
         "title": "All of Us Strangers",

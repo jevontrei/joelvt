@@ -62,7 +62,7 @@ export default function MyMoviesDb() {
 
         if (error) {
           console.log(
-            "[query-movies-db-action] Failed to fetch movies:",
+            ">> [query-movies-db-action] Failed to fetch movies:",
             error,
           );
           toast.error(error);
@@ -80,7 +80,7 @@ export default function MyMoviesDb() {
         // TODO: this toast shows twice (when i navigate here via the navbar)
         toast.success("Bloody oath! Database has been gotted!");
       } catch (err) {
-        console.log("Error from my-movies.tsx:", err);
+        console.log(">> Error from my-movies.tsx:", err);
         toast.error(`Network error: ${err}`);
       } finally {
         // always re-enable button
@@ -100,7 +100,7 @@ export default function MyMoviesDb() {
       const { error, count } = await SeedMoviesAction();
 
       if (error) {
-        console.log("[seed-movies-action] Failed to seed movies:", error);
+        console.log(">> [seed-movies-action] Failed to seed movies:", error);
         toast.error(error);
         return;
       }
@@ -123,7 +123,7 @@ export default function MyMoviesDb() {
       // now need to re-query db (state will be state therein)
       QueryMoviesDbAction();
     } catch (err) {
-      console.log("Error from my-movies.tsx:", err);
+      console.log(">> Error from my-movies.tsx:", err);
       toast.error(`Network error: ${err}`);
     } finally {
       // always re-enable button
@@ -143,7 +143,7 @@ export default function MyMoviesDb() {
 
       if (error) {
         console.log(
-          "[toggle-watched-status-action] Failed to fetch movies or toggle status:",
+          ">> [toggle-watched-status-action] Failed to fetch movies or toggle status:",
           error,
         );
         toast.error(error);
@@ -167,7 +167,7 @@ export default function MyMoviesDb() {
       );
       setMyMovies(updatedMyMovies);
     } catch (err) {
-      console.log("Error from my-movies.tsx:", err);
+      console.log(">> Error from my-movies.tsx:", err);
       toast.error(`Network error: ${err}`);
     } finally {
       // always re-enable button
@@ -184,7 +184,7 @@ export default function MyMoviesDb() {
       const { error, data } = await DeleteMovieAction(movieId);
 
       if (error) {
-        console.log("[delete-movie-action] Failed to delete movie:", error);
+        console.log(">> [delete-movie-action] Failed to delete movie:", error);
         toast.error(error);
         return;
       }
@@ -210,7 +210,7 @@ export default function MyMoviesDb() {
       );
       setMyMovies(updatedMyMovies);
     } catch (err) {
-      console.log("Error from my-movies.tsx:", err);
+      console.log(">> Error from my-movies.tsx:", err);
       toast.error(`Network error: ${err}`);
     } finally {
       // always re-enable button
@@ -259,7 +259,7 @@ export default function MyMoviesDb() {
                     <div className="w-48 overflow-auto">{movie.title}</div>
                   </td>
 
-                  {/* TODO: add release_date (AND POSTER) to api call and db */}
+                  {/* TODO: add POSTER to api call and db */}
                   <td>{movie.release_date}</td>
 
                   {/* TODO: use tooltips (using react-tooltip) */}
@@ -277,14 +277,14 @@ export default function MyMoviesDb() {
                           // <ToggleRight size={72} />
                           <Image
                             src="/toggle-right.svg"
-                            alt="toggle on icon"
+                            alt="toggled on icon"
                             width={20}
                             height={20}
                           />
                         ) : (
                           <Image
                             src="/toggle-left.svg"
-                            alt="toggle off icon"
+                            alt="toggled off icon"
                             width={20}
                             height={20}
                           />
