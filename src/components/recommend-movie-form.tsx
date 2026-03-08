@@ -98,11 +98,6 @@ export default function RecommendMovieForm() {
 
         {movieResults && (
           <>
-            {/* <div className="mt-12">
-              <p>
-                <strong>Top results from TMDb</strong>
-              </p>
-            </div> */}
             <div className="mt-8 overflow-x-auto overflow-y-auto border rounded flex flex-col items-center">
               <table className="w-full">
                 <thead className="sticky top-0 bg-gray-200">
