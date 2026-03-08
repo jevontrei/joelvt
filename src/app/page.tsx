@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Page() {
   return (
     <div className="flex flex-col items-center gap-8">
-      <h2 className="text-6xl mt-8 mx-4">hi</h2>
+      <h2 className="text-6xl mt-8 mx-4">Hi</h2>
       <Image
         src="https://http.cat/200"
         alt="http-200-okay-status-cat"

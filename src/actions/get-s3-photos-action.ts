@@ -37,7 +37,7 @@ export async function getPhotosAction(): Promise<dbQueryType> {
       data: dbResponse,
     };
   } catch (err) {
-    console.log("Error in database fetching:", err);
+    console.log(">> Error in database fetching:", err);
     return { error: String(err), data: null };
   }
 }
