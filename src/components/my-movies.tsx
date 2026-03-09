@@ -118,6 +118,7 @@ export default function MyMoviesDb() {
       setIsPending(false);
     }
   }
+
   async function handleToggleWatchedClick(movieId: string) {
     // note: we don't need evt or evt.preventDefault() here because handleToggleWatchedClick is not coming from a form element or link click -- so there's no reload to prevent
     setIsPending(true);

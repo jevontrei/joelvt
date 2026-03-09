@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getPhotosAction } from "@/actions/get-s3-photos-action";
+import JessTakingPhotos from "./album/page";
 
 export default async function Page() {
   // get photos metadata from db
@@ -13,7 +14,7 @@ export default async function Page() {
   // use  metadata to display s3 photos (using urls)
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-4xl mt-8 mx-4">Asia, 2025-26</h2>
+      {/* <h2 className="text-4xl mt-8 mx-4">Asia, 2025-26</h2> */}
 
       <div className="grid grid-cols-2 gap-4 p-8">
         {data.map((photo) => (
@@ -29,6 +30,8 @@ export default async function Page() {
           </div>
         ))}
       </div>
+      <h2 className="text-4xl mt-8 mx-4">Photos of Jess Taking Photos</h2>
+      <JessTakingPhotos photos={data} />
     </div>
   );
 }

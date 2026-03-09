@@ -42,6 +42,7 @@ model Photo {
   updatedAt DateTime @updatedAt
 
   title         String?
+  album         String?
   description   String?
   s3_url        String
   s3_key        String
