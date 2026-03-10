@@ -1,7 +1,7 @@
 "use client";
 
 import { getPhotosAction } from "@/actions/get-s3-photos-action";
-import PhotoAlbum from "./album/page";
+import PhotoAlbum from "@/components/photo-album";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { SeedPhotosAction } from "@/actions/seed-photos-action";
