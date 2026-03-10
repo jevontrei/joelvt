@@ -11,7 +11,7 @@ export default function PhotoAlbum({ photos }: PhotoAlbumProps) {
   return (
     <div>
       <div className="grid grid-cols-2 gap-4 p-8">
-        {Array.from(photos).map((photo) => (
+        {photos.map((photo) => (
           <div key={photo.id}>
             <Image
               src={photo.s3_url}
