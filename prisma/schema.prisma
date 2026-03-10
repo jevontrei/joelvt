@@ -44,6 +44,7 @@ model Photo {
   title         String?
   album         String?
   description   String?
+  orientation   String?
   s3_url        String
   s3_key        String
   uploadedAt    DateTime @default(now())

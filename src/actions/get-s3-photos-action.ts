@@ -16,11 +16,15 @@ type dbQueryErrorType = {
 
 type dbQueryType = dbQuerySuccessType | dbQueryErrorType;
 
-export async function getPhotosAction(): Promise<dbQueryType> {
+export async function getPhotosAction(album: string): Promise<dbQueryType> {
   try {
     // first get photos metadata from postgres
     const dbResponse = await prisma.photo.findMany({
+      where: {
+        album: album,
+      },
       orderBy: { display_order: "asc" },
+      // orderBy: { orientation: "asc" },
     });
 
     await notifyDiscord(
