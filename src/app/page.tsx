@@ -2,11 +2,11 @@
 export default function Page() {
   return (
     <div className="flex flex-col items-center gap-4">
-      <h2 className="text-6xl mt-8 mb-4 mx-4">Joel von Treifeldt</h2>
+      <h2 className="text-4xl mt-8 mb-4 mx-4">Joel von Treifeldt</h2>
       <p>Welcome to my corner of the internet.</p>
       <p>
-        A full-stack Next.js project with a movies database (TMDB API) and
-        travel photos (AWS SDK).
+        A full-stack Next.js project with a movies database (TMDb API), travel
+        photos (AWS SDK), and a reading list.
       </p>
     </div>
   );

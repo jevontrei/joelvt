@@ -35,7 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* could try using items-center-safe safe here */}
-        <div className="p-1 flex-col items-center-safe justify-center">
+        <div className="p-1 flex flex-col items-center-safe justify-center">
           {/* <h1 className="text-6xl mt-6 mx-4 flex justify-center">joelvt</h1> */}
 
           <NavBar />
