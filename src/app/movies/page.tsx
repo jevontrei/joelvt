@@ -9,7 +9,7 @@ import Link from "next/link";
 export default function Page() {
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-6xl my-8 mx-4">Movies</h2>
+      <h3 className="text-4xl my-8 mx-4">Movies</h3>
       <Link href="/movies/recommend">
         <Button className="w-52 m-4">
           <CirclePlus />

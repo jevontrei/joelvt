@@ -6,7 +6,8 @@ export default function Page() {
       <p>Welcome to my corner of the internet.</p>
       <p>
         A full-stack Next.js project with a movies database (TMDb API), travel
-        photos (AWS SDK), and a reading list.
+        photos (AWS SDK), a reading list, and a music language database (Spotify
+        Web API).
       </p>
     </div>
   );

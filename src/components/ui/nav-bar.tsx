@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Button } from "./button";
-import { BookOpen, Camera, Clapperboard, House } from "lucide-react";
+import {
+  AudioLines,
+  BookOpen,
+  Camera,
+  Clapperboard,
+  House,
+} from "lucide-react";
 
 // default export
 export default function NavBar() {
@@ -37,10 +43,11 @@ export default function NavBar() {
       link: "/reading",
       icon: <BookOpen />,
     },
-    // {
-    //   name: "Music",
-    //   link: "/music",
-    // },
+    {
+      name: "Music",
+      link: "/music",
+      icon: <AudioLines />,
+    },
     // {
     //   name: "Blog",
     //   link: "/blog",

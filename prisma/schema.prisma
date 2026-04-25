@@ -16,6 +16,42 @@ datasource db {
   provider = "postgresql"
 }
 
+model Lick {
+  id              String           @id @default(uuid())
+  name            String
+  lickOccurrences LickOccurrence[]
+
+  @@map("licks")
+}
+
+model Song {
+  id             String  @id @default(uuid())
+  title          String
+  artist         String
+  spotifyTrackId String? @unique
+  album          String?
+  releaseDate    String?
+  albumArtUrl    String?
+
+  lickOccurrences LickOccurrence[]
+
+  @@map("songs")
+}
+
+model LickOccurrence {
+  id            String @id @default(uuid())
+  lickId        String
+  songId        String
+  lick          Lick   @relation(fields: [lickId], references: [id], onDelete: Cascade)
+  song          Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  timestampSecs Int
+  audioUrl      String
+
+  @@unique([lickId, songId, timestampSecs])
+  @@index([songId])
+  @@map("occurrences")
+}
+
 model Movie {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())

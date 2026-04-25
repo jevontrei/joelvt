@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function Page() {
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-6xl my-8 mx-4">Recommend</h2>
+      <h3 className="text-4xl my-8 mx-4">Recommend</h3>
 
       <Image
         className="mt-12"
