@@ -1,4 +1,4 @@
-import MyLicksDb from "@/components/my-licks";
+import MyLicksDb from "@/components/my-lick-occurrences";
 
 // default export
 export default function Page() {
