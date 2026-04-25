@@ -1,7 +1,6 @@
 "use client";
 
 import { QueryLickOccurrencesDbAction } from "@/actions/query-lick-occurrences-db-action";
-
 import { LickOccurrence } from "@/generated/prisma/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,13 +9,10 @@ export default function MyLickOccurrences() {
   const [myLickOccurrences, setMyLickOccurrences] = useState<
     LickOccurrence[] | null
   >(null);
-  const [isPending, setIsPending] = useState(false);
   const [dbIsEmpty, setDbIsEmpty] = useState(false);
 
   // this loads the db on page load
   useEffect(() => {
-    setIsPending(true);
-
     toast.info("Querying database...");
 
     // can't use await directly inside useEffect(), so we create an async fn INSIDE useEffect()
@@ -40,14 +36,10 @@ export default function MyLickOccurrences() {
       } catch (err) {
         console.error(">> Error from my-lick-occurrences.tsx:", err);
         toast.error(`Network error: ${err}`);
-      } finally {
-        // always re-enable button
-        setIsPending(false);
       }
-      // Errors in Promises don't get caught by regular try/catch unless you await the Promise
     };
     callDbQueryer();
-  }, []); // empty array as 2nd arg = run once on mount
+  }, []); // empty array as 2nd arg => run once on mount
 
   return (
     <div className="mb-8 mx-4 flex flex-col items-center space-y-2">
@@ -59,6 +51,7 @@ export default function MyLickOccurrences() {
                 <th className="text-left">Lick ID</th>
                 <th className="text-center">Song ID</th>
                 <th className="text-center">Timestamp (seconds)</th>
+                <th className="text-center">Audio</th>
               </tr>
             </thead>
             <tbody>
@@ -67,6 +60,9 @@ export default function MyLickOccurrences() {
                   <td>{lickOccurrence.lickId}</td>
                   <td>{lickOccurrence.songId}</td>
                   <td>{lickOccurrence.timestampSecs}</td>
+                  <td>
+                    <audio controls src={lickOccurrence.audioUrl}></audio>
+                  </td>
                 </tr>
               ))}
             </tbody>
