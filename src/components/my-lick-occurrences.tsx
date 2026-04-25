@@ -1,19 +1,13 @@
 "use client";
 
-import { QueryLickOccurrencesDbAction } from "@/actions/query-lick-occurrences-db-action";
-import { Prisma } from "@/generated/prisma/client";
+import { QueryLickOccurrencesDbAction, LickOccurrenceWithRelations } from "@/actions/query-lick-occurrences-db-action";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-type LickOccurrenceWithRelations = Prisma.LickOccurrenceGetPayload<{                                                                                                                                                                           
-    include: { lick: true; song: true }                                                                                                                                                                                                          
-  }>   
 
 export default function MyLickOccurrences() {
   const [myLickOccurrences, setMyLickOccurrences] = useState<
     LickOccurrenceWithRelations[] | null
   >(null);
-  const [dbIsEmpty, setDbIsEmpty] = useState(false);
 
   // this loads the db on page load
   useEffect(() => {
@@ -29,7 +23,6 @@ export default function MyLickOccurrences() {
           return;
         }
         if (!data || data.length === 0) {
-          setDbIsEmpty(true);
           toast.info("Database is empty!");
           return;
         }

@@ -1,12 +1,16 @@
 "use server";
 
 import { prisma } from "@/lib/prisma-neon";
-import { LickOccurrence } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
+import {  Prisma } from "@/generated/prisma/client"; // "client" = Prisma's library name, not client-side code (works on server too)
 import { notifyDiscord } from "./notify-discord-action";
+
+export type LickOccurrenceWithRelations = Prisma.LickOccurrenceGetPayload<{
+    include: { lick: true; song: true }
+  }>
 
 type DbQuerySuccessType = {
   error: null;
-  data: LickOccurrence[];
+  data: LickOccurrenceWithRelations[];
 };
 
 type DbQueryErrorType = {
@@ -15,8 +19,6 @@ type DbQueryErrorType = {
 };
 
 type DbQueryType = DbQuerySuccessType | DbQueryErrorType;
-
-
 
 export async function QueryLickOccurrencesDbAction(): Promise<DbQueryType> {
   try {
