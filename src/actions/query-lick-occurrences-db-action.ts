@@ -16,9 +16,13 @@ type DbQueryErrorType = {
 
 type DbQueryType = DbQuerySuccessType | DbQueryErrorType;
 
+
+
 export async function QueryLickOccurrencesDbAction(): Promise<DbQueryType> {
   try {
-    const dbResponse = await prisma.lickOccurrence.findMany();
+    const dbResponse = await prisma.lickOccurrence.findMany(
+      {include: {lick: true, song: true}}
+    );
 
     await notifyDiscord(
       `LickOccurrences db queried: ${dbResponse.length} lickOccurrences found`,
