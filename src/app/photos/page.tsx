@@ -92,7 +92,7 @@ export default function Page() {
 
       {myPhotos && <PhotoAlbum photos={myPhotos} />}
 
-      <form
+      {/* <form
         onSubmit={handleSeedDbSubmit}
         className="mt-16 space-y-2 flex flex-col items-center"
       >
@@ -104,7 +104,7 @@ export default function Page() {
           <Sprout />
           {isPending ? "Thinking..." : "Seed database"}
         </Button>
-      </form>
+      </form> */}
     </div>
   );
 }
