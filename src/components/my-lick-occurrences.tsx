@@ -1,15 +1,13 @@
 "use client";
 
-import { QueryLickOccurrencesDbAction } from "@/actions/query-lick-occurrences-db-action";
-import { LickOccurrence } from "@/generated/prisma/client";
+import { QueryLickOccurrencesDbAction, LickOccurrenceWithRelations } from "@/actions/query-lick-occurrences-db-action";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function MyLickOccurrences() {
   const [myLickOccurrences, setMyLickOccurrences] = useState<
-    LickOccurrence[] | null
+    LickOccurrenceWithRelations[] | null
   >(null);
-  const [dbIsEmpty, setDbIsEmpty] = useState(false);
 
   // this loads the db on page load
   useEffect(() => {
@@ -25,7 +23,6 @@ export default function MyLickOccurrences() {
           return;
         }
         if (!data || data.length === 0) {
-          setDbIsEmpty(true);
           toast.info("Database is empty!");
           return;
         }
@@ -48,8 +45,9 @@ export default function MyLickOccurrences() {
           <table className="w-full">
             <thead className="sticky top-0 bg-gray-200">
               <tr>
-                <th className="text-left">Lick ID</th>
-                <th className="text-center">Song ID</th>
+                <th className="text-left">Lick</th>
+                <th className="text-center">Song</th>
+                <th className="text-center">Artist</th>
                 <th className="text-center">Timestamp (seconds)</th>
                 <th className="text-center">Audio</th>
               </tr>
@@ -57,11 +55,16 @@ export default function MyLickOccurrences() {
             <tbody>
               {myLickOccurrences.map((lickOccurrence) => (
                 <tr key={lickOccurrence.id} className="even:bg-gray-50">
-                  <td>{lickOccurrence.lickId}</td>
-                  <td>{lickOccurrence.songId}</td>
+                  <td>{lickOccurrence.lick.name}</td>
+                  <td>{lickOccurrence.song.title}</td>
+                  <td>{lickOccurrence.song.artist}</td>
                   <td>{lickOccurrence.timestampSecs}</td>
                   <td>
-                    <audio controls src={lickOccurrence.audioUrl}></audio>
+                    <audio
+                      controls
+                      preload="none"
+                      src={lickOccurrence.audioUrl}
+                    ></audio>
                   </td>
                 </tr>
               ))}
