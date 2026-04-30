@@ -4,6 +4,12 @@ import { QueryLickOccurrencesDbAction, LickOccurrenceWithRelations } from "@/act
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+function formatSecsAsMmSs(totalSecs: number): string {
+  const mins = Math.floor(totalSecs / 60);
+  const secs = Math.floor(totalSecs % 60);
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
 export default function MyLickOccurrences() {
   const [myLickOccurrences, setMyLickOccurrences] = useState<
     LickOccurrenceWithRelations[] | null
@@ -48,7 +54,7 @@ export default function MyLickOccurrences() {
                 <th className="text-left">Lick</th>
                 <th className="text-center">Song</th>
                 <th className="text-center">Artist</th>
-                <th className="text-center">Timestamp (seconds)</th>
+                <th className="text-center">Timestamp</th>
                 <th className="text-center">Audio</th>
               </tr>
             </thead>
@@ -58,7 +64,7 @@ export default function MyLickOccurrences() {
                   <td>{lickOccurrence.lick.name}</td>
                   <td>{lickOccurrence.song.title}</td>
                   <td>{lickOccurrence.song.artist}</td>
-                  <td>{lickOccurrence.timestampSecs}</td>
+                  <td>{formatSecsAsMmSs(lickOccurrence.timestampSecs)}</td>
                   <td>
                     <audio
                       controls
